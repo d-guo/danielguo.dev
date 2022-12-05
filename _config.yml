@@ -90,7 +90,7 @@ timeline:
     description: Privacy in ML models using fully homomorphic encryption
 
   - job:
-    company: California Hospistal
+    company: California Hospital
     title: Newborn
     start: 2000
     end:
