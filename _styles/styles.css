@@ -1,0 +1,27 @@
+* {
+  font-family:  'Be Vietnam Pro', sans-serif;
+  background: #1E1E1E;
+  color: white;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: 1fr 3px 1fr;
+  /* grid-template-areas: 
+      "date1 line content1"
+      "date2 line content2"
+      "date3 line content3"; */
+}
+
+.date {
+  grid-column-start: col-start 0;
+}
+
+.line {
+  grid-column-start: col-start 1;
+  background: white;
+}
+
+.content {
+  grid-column-start: col-start 2;
+}
