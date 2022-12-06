@@ -92,7 +92,7 @@ timeline:
   - job:
     company: California Hospital
     title: Newborn
-    start: 2000
+    start:
     end: 2000
     description: Birth
     
