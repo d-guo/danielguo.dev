@@ -26,19 +26,19 @@
                 <!-- icons -->
                 <div class="my-8" style="text-align:center">
                     {% if links.email is defined and links.email is not none %}
-                    <a class="w-36 mr-12" href="mailto: {{ links.email }}"><i class="fa-solid fa-envelope fa-xl"></i></a>
+                    <a class="w-36 mr-12" href="mailto: {{ links.email }}" target="_blank"><i class="fa-solid fa-envelope fa-xl"></i></a>
                     {% endif %}
                     {% if links.github is defined and links.github is not none %}
-                    <a class="w-36 mr-12" href="https://github.com/{{ links.github }}"><i class="fa-brands fa-github fa-xl"></i></a>
+                    <a class="w-36 mr-12" href="https://github.com/{{ links.github }}" target="_blank"><i class="fa-brands fa-github fa-xl"></i></a>
                     {% endif %}
                     {% if links.linkedin is defined and links.linkedin is not none %}
-                    <a class="w-36 mr-12" href="https://www.linkedin.com/in/{{ links.linkedin }}/"><i class="fa-brands fa-linkedin fa-xl"></i></a>
+                    <a class="w-36 mr-12" href="https://www.linkedin.com/in/{{ links.linkedin }}/" target="_blank"><i class="fa-brands fa-linkedin fa-xl"></i></a>
                     {% endif %}
                     {% if links.telegram is defined and links.telegram is not none %}
-                    <a class="w-36 mr-12" href="https://t.me/{{ links.telegram }}"><i class="fa-brands fa-telegram fa-xl"></i></a>
+                    <a class="w-36 mr-12" href="https://t.me/{{ links.telegram }}" target="_blank"><i class="fa-brands fa-telegram fa-xl"></i></a>
                     {% endif %}
                     {% if links.twitter is defined and links.twitter is not none %}
-                    <a class="w-36" href="https://github.com/d-guo"><i class="fa-brands fa-twitter fa-xl"></i></a>
+                    <a class="w-36" href="https://github.com/d-guo" target="_blank"><i class="fa-brands fa-twitter fa-xl"></i></a>
                     {% endif %}
                 </div>
             </div>
