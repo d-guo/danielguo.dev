@@ -1,6 +1,8 @@
-from shutil import copyfile
-import jinja2
 import frontmatter
+import jinja2
+
+from shutil import copyfile
+
 
 templates_environment = jinja2.Environment(loader=jinja2.FileSystemLoader('_templates'), extensions=['jinja_markdown.MarkdownExtension'])
 
