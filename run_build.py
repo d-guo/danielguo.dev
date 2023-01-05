@@ -31,20 +31,33 @@ print('rendered index into _site')
 # create blog section of _site
 os.makedirs('_site/blog')
 
-# copy styling into blog section
+# create blog archive section of _site
+os.makedirs('_site/blog/archive')
+
+# copy styling into blog and archive section
 for styling in os.listdir('_styles'):
     utils.copyFileToSite(f'_styles/{styling}', f'blog/{styling}')
-print('copied styling into blog section')
+    utils.copyFileToSite(f'_styles/{styling}', f'blog/archive/{styling}')
+print('copied styling into blog and archive section')
 
 # render main index into blog section
-blogdata = {'blogs': [utils.splitFrontMatterContent(f'_blogposts/{blogpost}')[0] | {'url': f'{"".join(blogpost.split(".")[:-1])}.html'} for blogpost in os.listdir('_blogposts')]}
+blogdata = {'blogs': [utils.splitFrontMatterContent(f'_blogposts/{blogpost}')[0] | {'url': f'{"".join(blogpost.split(".")[:-1])}.html'} for blogpost in os.listdir('_blogposts') if blogpost[-3:] == '.md']}
 blogdata['blogs'].sort(key=lambda x: x['order'], reverse=True)
+blogdata['blog_template_title'] = 'Blog Posts'
 text = utils.renderTemplate('blog-index.html', blogdata)
 utils.writeToSite(text, 'blog/index.html')
-print('rendered index into _site')
+print('rendered blog index into blog')
 
-# render blogpages into _site
-for blogpost in os.listdir('_blogposts'):
+# render main index into blog archive section
+blogdata = {'blogs': [utils.splitFrontMatterContent(f'_blogposts/archive/{blogpost}')[0] | {'url': f'{"".join(blogpost.split(".")[:-1])}.html'} for blogpost in os.listdir('_blogposts/archive') if blogpost[-3:] == '.md']}
+blogdata['blogs'].sort(key=lambda x: x['order'], reverse=True)
+blogdata['blog_template_title'] = 'Archived Blog Posts'
+text = utils.renderTemplate('blog-index.html', blogdata)
+utils.writeToSite(text, 'blog/archive/index.html')
+print('rendered archive index into blog/archive')
+
+# render blogpages into blog
+for blogpost in [blogpost for blogpost in os.listdir('_blogposts') if blogpost[-3:] == '.md']:
     front_matter, content = utils.splitFrontMatterContent(f'_blogposts/{blogpost}')
 
     blogpost_data = front_matter
@@ -53,5 +66,18 @@ for blogpost in os.listdir('_blogposts'):
     template = 'blogpage.html'
     text = utils.renderTemplate(template, blogpost_data)
     utils.writeToSite(text, f'blog/{"".join(blogpost.split(".")[:-1])}.html')
+print('rendered blogposts into blog')
+
+# render blogpages into blog archive
+for blogpost in [blogpost for blogpost in os.listdir('_blogposts/archive') if blogpost[-3:] == '.md']:
+    front_matter, content = utils.splitFrontMatterContent(f'_blogposts/archive/{blogpost}')
+
+    blogpost_data = front_matter
+    blogpost_data['content'] = markdown2.markdown(content, extras=["tables", "cuddled-lists", "code-friendly", "fenced-code-blocks"])
+
+    template = 'blogpage.html'
+    text = utils.renderTemplate(template, blogpost_data)
+    utils.writeToSite(text, f'blog/archive/{"".join(blogpost.split(".")[:-1])}.html')
+print('rendered blogposts into blog archive')
 
 print('success')

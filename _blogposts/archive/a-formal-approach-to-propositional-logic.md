@@ -1,5 +1,5 @@
 ---
-title: A Formal Approach to Propositional Logic [archived]
+title: A Formal Approach to Propositional Logic
 author: Daniel Guo
 excerpt: A formal recursive construction of languages in propositional logic.
 posted: Dec. 24 2019

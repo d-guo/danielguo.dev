@@ -1,5 +1,5 @@
 ---
-title: Equivalence of Mathematical Induction and Well-Ordering [archived]
+title: Equivalence of Mathematical Induction and Well-Ordering
 author: Daniel Guo
 excerpt: Proof that the well-ordering principle and the principle of mathematical induction are logically equivalent.
 posted: Dec. 21 2019

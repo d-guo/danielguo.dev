@@ -1,5 +1,5 @@
 ---
-title: Theory Behind Hash Tables [archived]
+title: Theory Behind Hash Tables
 author: Daniel Guo
 excerpt: We dive into how hash tables work from an abstract standpoint.
 posted: Dec. 29 2019

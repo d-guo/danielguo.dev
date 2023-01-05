@@ -1,5 +1,5 @@
 ---
-title: Karl Popper's Philosophy of Science [archived]
+title: Karl Popper's Philosophy of Science
 author: Daniel Guo
 excerpt: What is science? What distinguishes it from psuedoscience? Philosopher Karl Popper believed that the answer boils down to falsifiability.
 posted: Dec. 16 2019
