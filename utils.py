@@ -4,7 +4,7 @@ import jinja2
 from shutil import copyfile
 
 
-templates_environment = jinja2.Environment(loader=jinja2.FileSystemLoader('_templates'), extensions=['jinja_markdown.MarkdownExtension'])
+templates_environment = jinja2.Environment(loader=jinja2.FileSystemLoader('_templates'))
 
 def writeToSite(text, file_name):
     with open(f'_site/{file_name}', 'w+') as f:

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory Behind Hash Tables [archived]</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+          }
+        });
+      </script>
+          
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+
+<body style="display: flex; justify-content: center;">
+    <article style="width: 55%; padding-top: 5%;">
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-size: 3rem; line-height: 1; font-weight: bold; margin-bottom: 0.25rem;">Theory Behind Hash Tables [archived]</h1>
+            <span style="font-size: 0.875rem; line-height: 1.25rem; color: darkgray">by</span> Daniel Guo <span style="font-size: 0.875rem; line-height: 1.25rem; color: darkgray">posted on</span> Dec. 29 2019
+        </div>
+        <div style="font-weight: lighter; line-height: 1.2;">
+            <p><p>Hash tables are important in many computer applications, particularly for quick storage of data that's constantly changing. I think the theory behind them is really interesting, and I hope everyone can gain a deeper understanding of this particular data structure from this abstract approach.</p>
+
+<p>The plan is to cover each of the following topics</p>
+
+<ol>
+<li>Dictionary ADT<sup>1</sup></li>
+<li>Naive Hash Table and Collisions</li>
+<li>Universal Hashing</li>
+<li>Resolving Collisions</li>
+<li>Perfect Hashing</li>
+</ol>
+
+<h3>Dictionary</h3>
+
+<p><strong>Definition</strong> A <em>dictionary</em> is an abstract data type which supports the three following operations</p>
+
+<ol>
+<li>Insert $x$. puts $x$ "inside" of the dictionary.</li>
+<li>Delete $x$. undoes the insertion of $x$.</li>
+<li>Lookup $x$. determines whether or not $x$ is "inside" of the dictionary.</li>
+</ol>
+
+<p>To illustrate the concept, let's look at a simple implementation of a dictionary.</p>
+
+<h4>Linked Lists</h4>
+
+<p>Hopefully the reader is familar with the basic concept of a linked list<sup>2</sup>. This supports the $3$ operations specified by the dictionary ADT. We can insert $x$ in $O(1)$ time by just adding $x$ to the head of the list. However, delete $x$ and lookup $x$ are $O(n)$ time, since in the worst case, we'd need to scan through the entire list.</p>
+
+<p>Linked lists are very space efficient, but the time complexity of delete and lookup is pretty bad. This is why we don't typically use linked lists if we need these operations.</p>
+
+<h3>Naive Hash Table and Issues</h3>
+
+<p>Some important notes on notation first. The <em>key space</em> or <em>universe</em> is the set of possible keys which could be inserted into our dictionary, denoted $U$. The set of keys which are actually relevant to our application (will be used in our dictionary) is denoted $S$. Typically, $|S| \ll |U|$. For convenience, let $n = |S|$ and $N = |U|$. The keys are items of some type which differ by application. For example, they could be IP addresses or names.</p>
+
+<p>For our purposes, we may assume that the key space is only integers since even noninteger keys are stored as numeric values (ASCII) by computers. Thus, let us assume that $U = \{1, 2, \dots, N\}$.</p>
+
+<p>To store the keys, we use a <em>table</em>, which is basically just an array. The table has some number of locations, denote this number by $m$, which are referenced by indices $0, 1, \dots, m - 1$. We can store our keys in the locations. An important aspect of tables is that we can access a given location by its index in $O(1)$ time (just like with arrays).</p>
+
+<p><strong>Definition</strong> A <em>hash function</em> is some function
+\[
+    h: U \to \{0, 1, \dots, m - 1\},
+\]
+where $U$ is some set.</p>
+
+<p>We can use this to "assign" each key in our universe $U$ to some location in our table.</p>
+
+<p>One thing to note is that we need to be able to compute $h(x)$ for $x \in U$ in $O(1)$ time. An example of such a hash function could be $h(x) = x \bmod m$. We will talk more about hash functions later, but this pretty much completes everything we need to implement our naive hash table.</p>
+
+<h4>Naive Hash Table Implementation</h4>
+
+<p>We initialize our table with all locations empty at first, and we perform each operation as follows</p>
+
+<ol>
+<li>Insert $x$. put $x$ at the location indexed by $h(x)$ in our table.</li>
+<li>Delete $x$. make empty the location indexed by $h(x)$ in our table.</li>
+<li>Lookup $x$. check whether or not the location indexed by $h(x)$ in our table is empty.</li>
+</ol>
+
+<p>some psuedocode</p>
+
+<pre><code>// Let h be the hash function
+class naive_hashtable:
+    int[] table
+
+    init(int table_size):
+        table = int[table_size]
+
+    insert(int x):
+        table[h(x)] = x
+
+    delete(int x):
+        table[h(x)] = empty
+
+    lookup(int x):
+        return table[h(x)] == x
+</code></pre>
+
+<h4>Collisions</h4>
+
+<p>This may seem pretty good at first, since we have $O(1)$ time complexity for each of these operations. The problem with this is that usually $m \ll N$, since $N$ is the size of the universe (all possible inputs) and $m$ is the size of our table which we need to load in memory. By the pigeonhole principle<sup>3</sup>, there must exist $x_{1}, x_{2} \in U$ such that $h(x_{1}) = h(x_{2})$. Then if we insert $x_{1}$ and $x_{2}$, they will be sent to the same location (known as a collision) and we will have problems. We will talk about how to resolve this issue later.</p>
+
+<h3>Universal Hashing</h3>
+
+<p>We haven't really talked much about what a hash function is. We've described how we use one, and our goal is to maintain the $O(1)$ time complexity for each of the operations. This gives us some ideas about what we properties we want one to have. Let $h: U \to \{0, 1, \dots, m - 1\}$ be a hash function.</p>
+
+<ol>
+<li>We want $h$ to be easy and quick to compute.</li>
+<li>We also want $h$ to distribute the keys as uniformly as possible inside the table. Imprecisely, this means that for whatever $U$ is, $h$ should spread the keys evenly among $\{0, 1, \dots, m - 1\}$ and not have too many collisions.</li>
+</ol>
+
+<p>Unfortunately, this second point is impossible.</p>
+
+<p><strong>Claim</strong> For any hash function $h$, we can find a set of keys $S$ of size $M$ such that $h$ sends every key in $S$ to the same location.</p>
+
+<p><strong>Proof</strong> Consider some set of keys $S'$ of size $(M - 1)m + 1$. By the pigeonhole principle, there must exist some $i \in \{0, 1, \dots, m - 1\}$ such that $h$ sends $M$ elements of $S'$ to $i$. Then we just let $S$ be the set of these $M$ elements.</p>
+
+<p>This is a pretty big problem. How can we use a good hash function if one doesn't exist? The solution is randomizing our construction of $h$. We will create a <em>family</em> of hash functions $H$ such that probabilistically, picking a $h \in H$ will give us the properties we want. In this sense, we want to have conditions on $H$, not each $h \in H$, to guarantee an even spread among $\{0, 1, \dots, m - 1\}$.</p>
+
+<p>Let's make this idea a little bit more concrete. A valiant attempt would be to ask for any key to have equal probability of being mapped to each location. However, this actually isn't quite what we want. Consider $H = \{h_{1}, \dots, h_{m}\}$ such that $h_{i}(x) = i - 1$ for $x \in U$. Then, true enough, given any $x \in U$, the liklihood that $x$ maps to $i \in \{0, 1, \dots, m - 1\}$ is $\frac{1}{m}$ as we randomly pick $h \in H$. But this hash function is terrible! It maps every key to the same location. This means we need to reconsider the condition on $H$.</p>
+
+<h4>Universal Family of Hash Functions</h4>
+
+<p>Turns out, the condition we actually want is the following</p>
+
+<p><strong>Definition</strong> A family of hash function is <em>universal</em> if for any $x_{1}, x_{2} \in U$ with $x_{1} \neq x_{2}$, if we choose $h \in H$ uniformly randomly, then
+\[
+    \text{Prob}[h(x_{1}) = h(x_{2})] \leq \frac{1}{m}.
+\]</p>
+
+<p>It takes a little bit of work to show that this is the condition we actually want. Remember that our goal is for $H$ to be such that for any set of keys from the universe, if we uniformly randomly pick $h \in H$, we will get on average an even spread over the locations. This brings us to the next claim.</p>
+
+<p><strong>Claim</strong> Suppose $H$ is universal. If we pick $h \in H$ uniformly randomly and $S$ is the set of keys relevant to our application (the ones we will hash), then for some key $x \in S$,
+\[
+    E[\text{# collisions with $x$}] &lt; \frac{n}{m},
+\]
+where $|S| = n$, and there are $m$ slots in our table.</p>
+
+<p>See that this is exactly the property we refer to when we describe an even spread. Now let's prove it.</p>
+
+<p><strong>Proof</strong> Let $C_{y}$ be $1$ if $h(y) = h(x)$ with $y \neq x$ and $0$ otherwise, and let $C$ be the # of keys which collide with $x$. Then,
+\[
+    \text{E}[C] = \text{E}[\sum_{y \in S \setminus \{x\}} C_{y}] = \sum_{y \in S \setminus \{x\}} \text{E}[C_{y}] \leq \sum_{y \in S \setminus \{x\}} \frac{1}{m} = \frac{n - 1}{m} &lt; \frac{n}{m}.
+\]</p>
+
+<p>In particular, if $m = n$, then we would expect $&lt; 1$, or $0$ collisions.</p>
+
+<h4>Constructing a Universal Family of Hash Functions</h4>
+
+<p>We now discuss one method to construct a universal family of hash functions. This is called the <em>Matrix Method</em>.</p>
+
+<p>Assume that the keys are $u$-bits long, so the size of the universe is $N = 2^{u}$, and also assume that the size of the table is $m = 2^{b}$ (is a power of $2$). $H$ is the set of all $b \times u$ binary matrices. Let $h \in H$ and $x \in U$. Then, $h(x) = hx \bmod 2$ denoting binary matrix vector multiplication. The result is a vector of length $b$, which represents a particular location in the table.</p>
+
+<p><strong>Claim</strong> $H$ is universal.</p>
+
+<p><strong>Proof</strong> Consider $x_{1}, x_{2} \in H$ with $x_{1} \neq x_{2}$. There must exist some bit $i$ in $x_{1}$ and $x_{2}$ which differs. Without loss of generality, assume $x_{1}[i] = 1$ and $x_{2}[i] = 0$. Now consider the hash functions in $H$ which are identical except in the $i$th column, call this set $H'$. Now see that for any $h_{1}, h_{2} \in H'$, $h_{1}(x_{2}) = h_{2}(x_{2})$. We now claim that for any two distinct $h_{1}, h_{2} \in H$, $h_{1}(x_{1}) \neq h_{2}(x_{1})$.</p>
+
+<p>To see this, consider what happens if two hash functions $h_{1}, h_{2} \in H'$ are different in the $i$th column. There must be some bit which is different, let it be the $j$th one. Now see that necessarily $h_{1}(x_{2})[j] \neq h_{2}(x_{2})[j]$, which is the desired result.</p>
+
+<p>Now see that $H'$ is of size $2^{b}$ and there exists only one $h \in H'$ such that $h(x_{1}) = h(x_{2})$. Thus, if we uniformly randomly pick $h \in H$, $\text{Prob}[h(x_{1}) = h(x_{2})] \leq \frac{1}{2^{b}} = \frac{1}{m}$, and so $H$ is universal.</p>
+
+<h3>Resolving Collisions</h3>
+
+<p>We still need to deal with the fact that no matter what, we will probably still have collisions in our hash table even with a universal family of hash functions, so we need a method to deal with that. There are two main ways to change the 3 operations defined by the dictionary ADT: open addressing and separate chaining. For both these methods, assume $h \in H$ is a hash function we've uniformly randomly picked from the universal family of hash functions $H$.</p>
+
+<h4>Open Addressing</h4>
+
+<p>The idea is when we have a collision when we insert some $x$, we just keep moving through the table until we find an empty slot and put $x$ there.</p>
+
+<ol>
+<li>Insert $x$. check location $h(x)$ in the table. if it is not empty, then check location $(h(x) + 1) \bmod m$. keep checking until we find an empty location and put $x$ there. if we return to location $h(x)$, then the table is full.</li>
+<li>Delete $x$. check location $h(x)$ in the table. if $x$ is not there, then check location $(h(x) + 1) \bmod m$. keep checking until we find $x$ and set that location to empty. if we return to locatiom $h(x)$, then $x$ is not in the table.</li>
+<li>Lookup $x$. check location $h(x)$ in the table. if $x$ is not there, then check location $(h(x) + 1) \bmod m$. keep checking until we find $x$. if we return to location $h(x)$, then $x$ is not in the table.</li>
+</ol>
+
+<p>This specific method is called linear probing. Instead of checking $(h(x) + 1) \bmod m$ after $h(x)$, we might check $(h(x) + i^{2}) \bmod m$, where $i$ is the iteration. This is quadratic probing.</p>
+
+<p>some psuedocode
+    {% raw %}
+    // Let h be the hash function
+    class naive_hashtable:
+        int[] table</p>
+
+<pre><code>    init(int table_size):
+        table = int[table_size]
+
+    insert(int x):
+        for i in 0 to table.size - 1:
+            if(table[(h(x) + i) % m] == empty):
+                table[(h(x) + i) % m] = x
+                return
+        return error: table is full
+
+    delete(int x):
+        for i in 0 to table.size - 1:
+            if(table[(h(x) + i) % m] == x):
+                table[(h(x) + i) % m] = empty
+                return
+        return error: x is not in table
+
+    lookup(int x):
+        for i in 0 to table.size - 1:
+            if(table[(h(x) + i) % m] == x):
+                return True
+        return False
+{% endraw %}
+</code></pre>
+
+<h4>Separate Chaining</h4>
+
+<p>The idea is we will have a list at each location in the table. Whenever we have a collision, instead of moving $x$ to a different location in the table, we just append it to the list.</p>
+
+<ol>
+<li>Insert $x$. append $x$ to the list at the location indexed by $h(x)$ in our table.</li>
+<li>Delete $x$. search through the list at the location indexed by $h(x)$ in our table and remove $x$ when we find it.</li>
+<li>Lookup $x$. check whether or not $x$ is in the list at the location indexed by $h(x)$ in our table is empty.</li>
+</ol>
+
+<p>some psuedocode
+    {% raw %}
+    // Let h be the hash function
+    class naive_hashtable:
+        list[] table</p>
+
+<pre><code>    init(int table_size):
+        table = list[table_size]
+
+    insert(int x):
+        table[h(x)].append(x)
+
+    delete(int x):
+        for i in 0 to table[h(x)].size - 1:
+            if(table[h(x)][i] == x):
+                table[h(x).remove(i)]
+                return
+
+    lookup(int x):
+        for i in 0 to table[h(x)].size - 1:
+            if(table[h(x)][i] == x):
+                return True
+        return False
+{% endraw %}
+</code></pre>
+
+<h5>Time Complexity Analysis</h5>
+
+<p>We will perform time complexity analysis on the separate chaining method. Since we expect $&lt; \frac{n}{m}$ collisions at each slot, we would expect that each list at each location of the table has length has than $\frac{n}{m}$. Now remember that $m$ is the size of the table and $n$ is the size of the set of relevant keys to our application. Thus, as long as we have an approximation of $n$, we can pick $m = O(n)$, so then each list is expected to have length less than some constant $c$. Thus, each operation can be expected to have $O(1)$ time complexity.</p>
+
+<p>In the case where we don't know the size of $n$ beforehand, we can do something called dynamic resizing. I'm not too sure on how this works, but I do know that the dynamic resizing allows each operation to have amortized $O(1)$ time complexity.</p>
+
+<h3>Perfect Hashing</h3>
+
+<p>We've constructed a pretty great hash table with the methods we've discussed so far. However, universal hashing only guaranteed us $O(1)$ <em>expected</em> time complexity; what we actually want is a guarantee about the worst case performance. Can we achieve $O(1)$ worst case time complexity for each of the operations if we fix $S$? Yes, using perfect hashing.</p>
+
+<p><strong>Definition</strong> A hash function is <em>perfect</em> if using it allows all operations to have $O(1)$ worst case time complexity.</p>
+
+<p><strong>Corollary</strong> A hash function is perfect if using it results in no collisions.</p>
+
+<p>I will describe one method to achieve perfect hashing using $O(n^{2})$ space, but there does exist a method using $O(n)$ space<sup>4</sup>.</p>
+
+<p><strong>Claim</strong> If we use a table of size $m = n^{2}$ and uniformly randomly pick $h \in H$, where $H$ is a universal family of hash functions, then the probability that $h$ results in no collisions is $&gt; \frac{1}{2}$.</p>
+
+<p><strong>Proof</strong><sup>5</sup> There are $\binom{n}{2}$ pairs of keys in $S$. Since $H$ is a universal family of hash functions, and using our previous result, we know that for any two keys $x_{1}, x_{2} \in S$ with $x_{1} \neq x_{2}$, $\text{Prob}[h(x_{1}) = h(x_{2})] = \frac{1}{m}$. Thus, the probability of no collisions is
+\[
+    1 - \frac{\binom{n}{2}}{m} &gt; \frac{1}{2}.
+\]</p>
+
+<p>Since the probability is $&gt; \frac{1}{2}$, we can just try a random $h \in H$. If it results in collisions, then we try a different $h' \in H$. On average, we will only need to do this twice.</p>
+
+<h4>Putting It All Together</h4>
+
+<p>We've built up a lot of concepts; now let's just implement (in our minds) a hash table with worst case $O(1)$ operations, where we have fixed $S$. We first build a universal family of hash tables $H$. Then, we create an empty table of size $|S|^{2}$. We uniformly randomly choose a $h' \in H$ and hash everything in $S$. If we get any collisions, we choose another $h'' \in H$ and repeat until we get no collisions. Now using this hash function $h$, we have a hash table with worst case $O(1)$ operations.</p>
+
+<h5>Footnotes</h5>
+
+<p><sup>1</sup> An abstract data type (or ADT) is basically a description of a data structure which specifies its behavior but not its implementation. A data structure is an implementation of an ADT.</p>
+
+<p><sup>2</sup> If not, just google "linked list data structure". Just the basic understanding is necessary, since we're only looking at it as an example of a dictionary.</p>
+
+<p><sup>3</sup> Pigeonhole principle is the idea that if we try to fit $m$ pigeons into $n$ holes, where $m &gt; n$, then one hole will have more than one pigeon. I'll probably talk more about this principle in some other post, since it has a lot of fun applications in proofs.</p>
+
+<p><sup>4</sup> The method which uses $O(n^{2})$ is a bit more complicated. The basic idea is we have regular table of size $m$. When we hash everything into it, we will have collisions. Then for each location in the table, we do the same thing as the $O(n^{2})$ method. It takes some analysis to show that this is $O(n)$ which is the main reason I'm just talking about the $O(n^{2})$ method.</p>
+
+<p><sup>5</sup> This proof shares a lot of themes with the birthday paradox.</p>
+</p>
+        </div>
+    </article>
+</body>
+</html>

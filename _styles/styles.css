@@ -7,10 +7,6 @@
 .timeline {
   display: grid;
   grid-template-columns: 1fr 3px 1fr;
-  /* grid-template-areas: 
-      "date1 line content1"
-      "date2 line content2"
-      "date3 line content3"; */
 }
 
 .date {

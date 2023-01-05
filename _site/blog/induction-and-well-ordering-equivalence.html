@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equivalence of Mathematical Induction and Well-Ordering [archived]</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+          }
+        });
+      </script>
+          
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+
+<body style="display: flex; justify-content: center;">
+    <article style="width: 55%; padding-top: 5%;">
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-size: 3rem; line-height: 1; font-weight: bold; margin-bottom: 0.25rem;">Equivalence of Mathematical Induction and Well-Ordering [archived]</h1>
+            <span style="font-size: 0.875rem; line-height: 1.25rem; color: darkgray">by</span> Daniel Guo <span style="font-size: 0.875rem; line-height: 1.25rem; color: darkgray">posted on</span> Dec. 21 2019
+        </div>
+        <div style="font-weight: lighter; line-height: 1.2;">
+            <p><p>In this post, we will see that the well-ordering principle (wop) and the principle of mathematical induction are logically equivalent. This means that given one, we are able to obtain the other. Our approach will be to prove the following statements in the given order</p>
+
+<ol>
+<li>the equivalence of weak and strong induction</li>
+<li>strong induction implies wop</li>
+<li>wop implies strong induction</li>
+</ol>
+
+<p>First, we give the statements of the principles.</p>
+
+<h4>Well-Ordering Principle</h4>
+
+<p>Any nonempty set of positive integers has a least element.</p>
+
+<h4>Principle of Induction</h4>
+
+<p>For the two forms of induction, let $P(n)$ be some proposition depending on $n$. For instance, $P(n)$ could be the proposition "there are n people in this room". Then "$P(n)$ holds for all $n \in \mathbb{Z}^{+}$" means "there are $n$ people in this room for every positive integer $n$" (which is impossible unless you're in an infinitely large room).</p>
+
+<h5>Weak Induction</h5>
+
+<p>To prove that $P(n)$ holds for all $n \in \mathbb{Z}^{+}$, we just need to show two steps <br>
+<strong>1.1</strong> Base step: $P(1)$ holds <br>
+<strong>1.2</strong> Inductive step: $P(k)$ implies $P(k + 1)$</p>
+
+<h5>Strong Induction</h5>
+
+<p>To prove that $P(n)$ holds for all $n \in \mathbb{Z}^{+}$, we just need to show two steps <br>
+<strong>2.1</strong> Base step: $P(1)$ holds <br>
+<strong>2.2</strong> Inductive step: $P(1) \land \dots \land P(k)$ implies $P(k + 1)$</p>
+
+<p>We use $\forall n \in \mathbb{Z}^{+} P(n)$ as a shorthand for the statement that $P(n)$ holds for all $n \in \mathbb{Z}^{+}$.</p>
+
+<h3>1. Equivalence of Weak and Strong Induction</h3>
+
+<p>The idea here will be to show that when we are proving a statement of the form $\forall n \in \mathbb{Z}^{+} P(n)$, if we can use one form of induction, then we can also use the other form of induction.</p>
+
+<h4>Weak Implies Strong</h4>
+
+<p>First assume we can prove $\forall n \in \mathbb{Z}^{+} P(n)$ using weak induction, so assume 1.1 and 1.2 hold. Our approach will be to show that 2.1 and 2.2 hold as well. Clearly 2.1 holds, since it is the same as 1.1. Though not as obvious, 2.2 logically follows from 1.2. If
+\begin{equation}
+P(k) \rightarrow P(k + 1),
+\end{equation}
+then
+\begin{equation}
+P(1) \land \dots \land P(k) \rightarrow P(k + 1).
+\end{equation}
+We can show this more rigorously using truth tables and cases... left as an exercise to the reader :). I think it's simple enough to skip, but for any readers who find this unclear, I would suggest actually going through the rigorous proof. With this, we have completed one direction of the proof.</p>
+
+<h4>Strong Implies Weak</h4>
+
+<p>Now assume we can prove $\forall n \in \mathbb{Z}^{+} P(n)$ using strong induction, so assume 2.1 and 2.2 hold. We define a new proposition $Q(n)$ as
+\begin{equation}
+Q(n) = P(1) \land \dots \land P(n).
+\end{equation}
+It is not too difficult to see (by expanding out the conjunctions) that $\forall n \in \mathbb{Z}^{+} P(n)$ is logically equivalent to $\forall n \in \mathbb{Z}^{+} Q(n)$ (meaning one is true if and only if the other is true). Now our goal will be to show that $\forall n \in \mathbb{Z}^{+} Q(n)$ can be proven using weak induction. In other words, we want to show that 1.1 and 1.2 hold for $\forall n \in \mathbb{Z}^{+} Q(n)$. It is important to note that now we are looking at 1.1 and 1.2 for the statement involving $Q$, not $P$. See that $Q(1)$ is the same as $P(1)$, so 1.1 holds.</p>
+
+<p>Now by 2.2, we have that $P(1) \land \dots \land P(k)$ implies $P(k + 1)$. Now consider that $A \rightarrow B$ is the same as $A \rightarrow A \land B$. <sup>1</sup> Thus, we can conclude that
+\begin{equation}
+P(1) \land \dots \land P(k) \rightarrow P(1) \land \dots \land P(k) \land P(k + 1).
+\end{equation}
+Thus, we arrive at the desired conclusion that $Q(k)$ implies $Q(k + 1)$, which is 1.2. This completes the other direction of the proof.</p>
+
+<h4>Possible Confusion</h4>
+
+<p>It occurs to me that there might be some confusion about why the way we proved their equivalence actually works. A concrete way to pose the question would be why does assuming weak induction works and then showing 2.1 and 2.2 prove that weak implies strong? The way to think about this is as follows. We want to show:</p>
+
+<p style="text-align: center;">
+for some statement $\forall n \in \mathbb{Z}^{+} P(n)$, if we can prove it using weak induction, then we can also prove it using strong induction.
+</p>
+
+<p>In other words, we want to show that whenever weak induction works, strong induction also works. So in our proof, we showed that 2.1 and 2.2 would hold if weak induction works. This means that strong induction would conclude that the statement is true; thus, strong induction works as well. The other direction of the problem has a similar reasoning.</p>
+
+<p><strong>Edit 12/24/2019</strong> Another point of confusion was pointed out to me. How are we equating a theorem and a proof technique? Instead of thinking about the induction principles as proof techniques, it might be useful to think of them as statements. To rephrase weak induction more clearly as a statement, we can say: if 1.1 and 1.2 hold, then $P(n)$ holds for all $n \in \mathbb{Z}^{+}$. This makes it obvious that we are actually proving the logical equivalence of statements.</p>
+
+<h3>2. Strong Induction Implies WOP</h3>
+
+<p>We prove this by contradiction, so assume that the well-ordering principle is false. Then there exists some nonempty set $S \subseteq \mathbb{Z}^{+}$, which does not have a least element. Now consider the following statement</p>
+
+<p style="text-align: center;">
+$P(n)$ says that $n \not \in S$.
+</p>
+
+<p>We will prove that $P(n)$ is true for all $n \in \mathbb{Z}^{+}$ by induction. If $1 \in S$, then it would have to be the least element, which by our assumption of $S$ cannot happen; thus $1 \not \in S$ and $P(1)$ holds. This takes care of the base step. For the inductive step, assume $P(1) \land \dots \land P(k)$, so $1 \not \in S$, $\dots$, $k \not \in S$. Then if $k + 1 \in S$, $k + 1$ would be the least element, which is impossible; thus $k + 1 \not \in S$ and $P(k + 1)$ holds. Thus by strong induction, we have shown $\forall n \in \mathbb{Z}^{+} P(n)$, or for all positive integers $n$, $n \not \in S$. Thus, $S$ must be empty, which is the desired contradiction.</p>
+
+<h3>3. WOP Implies Strong Induction</h3>
+
+<p>We assume the well-ordering principle and want to show that for some statement $\forall n \in \mathbb{Z}^{+} P(n)$, if 2.1 and 2.2 hold, then $\forall n \in \mathbb{Z}^{+} P(n)$ holds as well. To that end, assume 2.1 and 2.2 hold and consider the set $S$ which contains those $n$ such that $P(n)$ does not hold. More formally, define
+\begin{equation}
+S = \{n \mid \lnot P(n)\}.
+\end{equation}
+We will show that $S = \emptyset$ by contradiction. Suppose $S \neq \emptyset$, so by WOP, there exists some least element in $S$, denote it $k + 1$. Note that $k + 1 \neq 1$, since 2.1 asserts that $P(1)$ holds. Thus, $k + 1 &gt; 1$. Since $k + 1$ is the least element in $S$, this means that $P(1), \dots, P(k)$ are all true. Then, it follows from 2.2 that $P(k + 1)$ must be true as well, which is the desired contradiction. Thus, $S = \emptyset$, and $\forall n \in \mathbb{Z}^{+} P(n)$ holds as desired.</p>
+
+<h3>Concluding Remarks</h3>
+
+<p>This completes the proof of the main statement. The ideas are pretty simple, but I think it's a pretty cool result nonetheless. This is my first write-up of a math related topic, so please feel free to give me feedback (typos, lack of clarity, etc)! It is helpful for me to improve my own writing abilities and will be appreciated. I hope you all enjoyed and were able to learn something!</p>
+
+<h5>Footnotes</h5>
+
+<p><sup>1</sup> This can be easily verified with truth tables.</p>
+</p>
+        </div>
+    </article>
+</body>
+</html>
