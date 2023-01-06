@@ -43,7 +43,7 @@ print('copied styling into blog and archive section')
 # render main index into blog section
 blogdata = {'blogs': [utils.splitFrontMatterContent(f'_blogposts/{blogpost}')[0] | {'url': f'{"".join(blogpost.split(".")[:-1])}.html'} for blogpost in os.listdir('_blogposts') if blogpost[-3:] == '.md']}
 blogdata['blogs'].sort(key=lambda x: x['order'], reverse=True)
-blogdata['blog_template_title'] = 'Blog Posts'
+blogdata['blog_template_title'] = 'coming soon...'
 text = utils.renderTemplate('blog-index.html', blogdata)
 utils.writeToSite(text, 'blog/index.html')
 print('rendered blog index into blog')
