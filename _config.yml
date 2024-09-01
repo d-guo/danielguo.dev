@@ -13,7 +13,7 @@ description: Daniel Guo's Personal Website
 #
 owner:
   name: Daniel Guo
-  bio: CS Master's student at Columbia University on the ML track. Broadly interested in computer science and mathematics.
+  bio: Software Engineer at Palantir in NYC. Broadly interested in computer science and mathematics.
 
 #
 ####################################
@@ -35,18 +35,18 @@ links:
 #
 timeline:
   - job:
+    company: Palantir
+    title: Software Engineer
+    start: August 2023
+    end:
+    description: Database Orchestration (Cassandra) team
+
+  - job:
     company: Columbia University
     title: Master's in Computer Science
     start: Sep. 2022
-    end:
+    end: June 2023
     description: Machine Learning track
-
-  - job:
-    company: Atzberger Research Group
-    title: Undergraduate Researcher
-    start: Oct. 2018
-    end:
-    description: Data-efficient methods for inverse problems
 
   - job:
     company: Meta
@@ -75,6 +75,13 @@ timeline:
     start: Sep. 2018
     end: Dec. 2021
     description: College of Creative Studies
+
+  - job:
+    company: Atzberger Research Group
+    title: Undergraduate Researcher
+    start: Oct. 2018
+    end: Dec. 2021
+    description: Data-efficient methods for inverse problems
 
   - job:
     company: Visa
